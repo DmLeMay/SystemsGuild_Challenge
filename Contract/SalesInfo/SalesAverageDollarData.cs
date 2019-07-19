@@ -6,6 +6,7 @@ namespace Contract.SalesInfo
 {
     public class SalesAverageDollarData
     {
+
         public double SubTotalAverage { get; set; }
         public double TotalAverage { get; set; }
         public double AllAverageSameYear { get; set; }
