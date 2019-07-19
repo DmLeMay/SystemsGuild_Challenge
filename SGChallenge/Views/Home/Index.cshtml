@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using Contract.Parent;
+
+@model SalesAverageReport;
+
+<div class="row col-sm-12">
+    <form method="post">
+
+        <input class="col-sm-2" type="text" asp-for="@Model.UserInputs.Zipcode" />
+
+        <div class="col-sm-4">
+            <label>Start Date:</label>
+            <input type="date" asp-for="@Model.UserInputs.StartDate" />
+        </div>
+
+        <div class="col-sm-4">
+            <label>End Date:</label>
+            <input type="date" asp-for="@Model.UserInputs.EndDate" />
+        </div>
+
+        <input class="col-sm-2" type="submit" value="Search" />
+    </form>
+</div>
+
+
+<div class="row col-sm-12">
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+
+    @*<span asp-validation-for="UserInputs.EndDate" class="text-danger"></span>
+        <br />
+        <span asp-validation-for="UserInputs.Zipcode" class="text-danger"></span>*@
+
+</div>
+
+
+
+@* Only run code to show results  *@
+
+@if (Model.SalesAverageData.Count > 0)
+{
+    <hr />
+
+    <div class="row col-sm-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>PreTax Sale Average</th>
+                    <th>Total Sale Average</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var SaleAverage in Model.SalesAverageData)
+                {
+                    <tr>
+                        <td>
+                            @String.Format("{0:c}", @SaleAverage.SubTotalAverage)
+
+                        </td>
+
+                        <td>
+                            @String.Format("{0:c}", @SaleAverage.TotalAverage)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
