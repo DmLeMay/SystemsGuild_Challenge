@@ -1,50 +1,78 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-@using Contract.Parent;
+﻿@using Contract.Parent;
 
 @model SalesAverageReport;
 
-<div class="row col-sm-12">
-    <form method="post">
+@{
+    ViewData["Title"] = "Home Page";
+}
 
-        <input class="col-sm-2" type="text" asp-for="@Model.UserInputs.Zipcode" />
+<br />
+<br />
 
-        <div class="col-sm-4">
-            <label>Start Date:</label>
-            <input type="date" asp-for="@Model.UserInputs.StartDate" />
-        </div>
+<form method="post">
+    <div class="row col-sm-12">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="col-sm-2">
+                        <input type="text" placeholder="Zipcode (ex 60177)" asp-for="@Model.UserInputs.Zipcode" />
+                    </td>
+                    <td class="col-sm-2">
+                        <label class="col">Start:</label>
+                    </td>
+                    <td class="col-sm-2">
+                        <input type="date" asp-for="@Model.UserInputs.StartDate" />
+                    </td>
+                    <td class="col-sm-2">
+                        <label>End:</label>
+                    </td>
+                    <td class="col-sm-2">
+                        <input type="date" asp-for="@Model.UserInputs.EndDate" />
+                    </td>
+                    <td class="col-sm-2">                        
+                        <input class="btn btn-info col-sm-12" type="submit" value="Search" />
+                    </td>
+                </tr>                
+                <tr>
+                    <td class="col-sm-2"></td>
+                    <td class="col-sm-2"></td>
+                    <td class="col-sm-2"></td>
+                    <td class="col-sm-2"></td>
+                    <td class="col-sm-2"></td>
 
-        <div class="col-sm-4">
-            <label>End Date:</label>
-            <input type="date" asp-for="@Model.UserInputs.EndDate" />
-        </div>
+                    <td class="col-sm-2">
+                        <input class="btn btn-danger col-sm-12" type="submit" asp-action="ClearHome" value="Clear" />
+                    </td>      
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</form>
 
-        <input class="col-sm-2" type="submit" value="Search" />
-    </form>
-</div>
-
+<br />
 <div class="row col-sm-12">
 
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
 </div>
 
-
-
 @* Only run code to show results  *@
 
 @if (Model.SalesAverageData.Count > 0)
 {
-    <hr />
-
+    <br />
+    <br />
     <div class="row col-sm-12">
+        <hr />
+
         <table class="table">
             <thead>
                 <tr>
-                    <th>PreTax Sale Average</th>
-                    <th>Total Sale Average</th>
+                    <th>Searched Average</th>
+                    <th>Prior Year to Searched Average</th>
+                    <th>All Sales Average</th>
+                    <th>All Sales Average Same Zip</th>
+
                 </tr>
             </thead>
 
@@ -53,12 +81,87 @@
                 {
                     <tr>
                         <td>
-                            @String.Format("{0:c}", @SaleAverage.SubTotalAverage)
+                            <label>@String.Format("{0:c}", @SaleAverage.SalesAverage)</label>
+                        </td>
+                        <td>
+                            @if (SaleAverage.SalesAverage < @SaleAverage.PrevYearSameRange)
+                            {
+                                <label title="@String.Format("Searched Average is {0:c} less",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.PrevYearSameRange))">
+
+                                    @String.Format("{0:c}", @SaleAverage.PrevYearSameRange)
+
+                                </label>
+                            }
+                            else if (SaleAverage.SalesAverage == @SaleAverage.PrevYearSameRange)
+                            {
+                                <label title="@String.Format("Searched Average is equal",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.PrevYearSameRange))">
+
+                                    @String.Format("{0:c}", @SaleAverage.PrevYearSameRange)
+
+                                </label>
+                            }
+                            else
+                            {
+                                <label title="@String.Format("Searched Average is {0:c} greater",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.PrevYearSameRange))">
+
+                                    @String.Format("{0:c}", @SaleAverage.PrevYearSameRange)
+
+                                </label>
+                            }
+
 
                         </td>
-
                         <td>
-                            @String.Format("{0:c}", @SaleAverage.TotalAverage)
+                            @if (SaleAverage.SalesAverage < @SaleAverage.AllSalesAverage)
+                            {
+                                <label title="@String.Format("Searched Average is {0:c} less",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.AllSalesAverage))">
+
+                                    @String.Format("{0:c}", @SaleAverage.AllSalesAverage)
+
+                                </label>
+                            }
+                            else if (SaleAverage.SalesAverage == @SaleAverage.AllSalesAverage)
+                            {
+                                <label title="@String.Format("Searched Average is equal",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.AllSalesAverage))">
+
+                                    @String.Format("{0:c}", @SaleAverage.AllSalesAverage)
+
+                                </label>
+                            }
+                            else
+                            {
+                                <label title="@String.Format("Searched Average is {0:c} greater",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.AllSalesAverage))">
+
+                                    @String.Format("{0:c}", @SaleAverage.AllSalesAverage)
+
+                                </label>
+                            }
+                        </td>
+                        <td>
+                            @if (SaleAverage.SalesAverage < @SaleAverage.AllSalesSameZip)
+                            {
+                                <label title="@String.Format("Searched average is {0:c} less",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.AllSalesSameZip))">
+
+                                    @String.Format("{0:c}", @SaleAverage.AllSalesSameZip)
+
+                                </label>
+                            }
+                            else if (SaleAverage.SalesAverage == @SaleAverage.AllSalesSameZip)
+                            {
+                                <label title="@String.Format("Searched average is equal",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.AllSalesSameZip))">
+
+                                    @String.Format("{0:c}", @SaleAverage.AllSalesSameZip)
+
+                                </label>
+                            }
+                            else
+                            {
+                                <label title="@String.Format("Searched Average is {0:c} greater",Math.Abs(@SaleAverage.SalesAverage - @SaleAverage.AllSalesSameZip))">
+
+                                    @String.Format("{0:c}", @SaleAverage.AllSalesSameZip)
+
+                                </label>
+                            }
                         </td>
                     </tr>
                 }
@@ -66,3 +169,6 @@
         </table>
     </div>
 }
+
+
+

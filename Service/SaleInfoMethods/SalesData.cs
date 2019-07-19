@@ -11,9 +11,9 @@ namespace Service.SaleInfoMethods
     {
         private readonly string ConnectionString = "Server=SAPPHIRE-PC;Database=AdventureWorks2017;Trusted_Connection=True;";
 
-        public List<SalesAverageDollarData> GetSalesAverages(string Zipcode, DateTime StartDate, DateTime EndDate)
+        public List<SalesAverageData> GetSalesAverages(string Zipcode, DateTime StartDate, DateTime EndDate)
         {
-            List<SalesAverageDollarData> SaleAverages = new List<SalesAverageDollarData>();
+            List<SalesAverageData> SaleAverages = new List<SalesAverageData>();
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -31,14 +31,14 @@ namespace Service.SaleInfoMethods
                     {
                         while (reader.Read())
                         {
-                            SalesAverageDollarData SaleAverageData = new SalesAverageDollarData();
+                            SalesAverageData SaleData = new SalesAverageData();
 
-                            SaleAverageData.SubTotalAverage = Convert.ToDouble(reader["SubTotalAverage"]);
-                            SaleAverageData.TotalAverage = Convert.ToDouble(reader["TotalAverage"]);
-                            //SaleAverageData.SalesAveragePrevMonthSameRange = Convert.ToDouble(reader["AveragePrevMonthRange"]);
-                            //SaleAverageData.AllSalesAverageSameYear = Convert.ToDouble(reader["AveragePrevMonthRange"]);
-                            //SaleAverageData.AllSalesAveragePrevYear = Convert.ToDouble(reader["AllSalesAveragePrevYear"]);
-                            SaleAverages.Add(SaleAverageData);
+                            SaleData.SalesAverage = Convert.ToDouble(reader["SalesAverage"]);
+                            SaleData.PrevYearSameRange = Convert.ToDouble(reader["PrevYearSameRange"]);
+                            SaleData.AllSalesAverage = Convert.ToDouble(reader["AllSalesAverage"]);
+                            SaleData.AllSalesSameZip = Convert.ToDouble(reader["AllSalesSameZip"]);
+                            
+                            SaleAverages.Add(SaleData);
                         }
                     }
                 }

@@ -6,6 +6,6 @@ namespace Service
 {
     public interface ISalesData
     {
-        List<SalesAverageDollarData> GetSalesAverages(string Zipcode, DateTime StartDate, DateTime EndDate);
+        List<SalesAverageData> GetSalesAverages(string Zipcode, DateTime StartDate, DateTime EndDate);
     }
 }

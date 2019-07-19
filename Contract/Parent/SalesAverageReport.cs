@@ -10,14 +10,12 @@ namespace Contract.Parent
     public class SalesAverageReport
     {
         public UserInput UserInputs { get; set; }
-        public List<SalesAverageDollarData> SalesAverageData { get; set; }
+        public List<SalesAverageData> SalesAverageData { get; set; }
 
         public SalesAverageReport()
         {
             UserInputs = new UserInput();
-            SalesAverageData = new List<SalesAverageDollarData>();
+            SalesAverageData = new List<SalesAverageData>();
         }
-
-
     }
 }

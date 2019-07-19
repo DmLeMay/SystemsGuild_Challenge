@@ -19,12 +19,13 @@ namespace SGChallenge.Controllers
             _salesData = SalesData;
         }
 
+        #region Home Get/Post Methods
 
         [HttpGet]
         public IActionResult Index()
         {
             SalesAverageReport report = new SalesAverageReport();
-            
+
             return View(report);
         }
 
@@ -32,24 +33,28 @@ namespace SGChallenge.Controllers
         public IActionResult Index(SalesAverageReport Model)
         {
             //Send Model data to validation methods, and set equal to result to hold any error messages
-            Model =  DateValidation(Model);
+            Model = DateValidation(Model);
             Model = ZipCodeValidation(Model);
 
-            //If the ModelState is bad return to page without doing anything            
-            if(!ModelState.IsValid)
+            //If the ModelState is bad return to page without doing anything to show user           
+            if (!ModelState.IsValid)
             {
                 return View("Index", Model);
             }
 
             Model.SalesAverageData = _salesData.GetSalesAverages(Model.UserInputs.Zipcode, Model.UserInputs.StartDate, Model.UserInputs.EndDate);
 
-            //TODO: Add code here to take values in from the 
             return View(Model);
         }
 
+        #endregion        
+
+        #region Data Validation Methods
+
+        //Zipcode validation pretty sparse as I noticed there are a wide variety of Zipcodes in database
         private SalesAverageReport ZipCodeValidation(SalesAverageReport Model)
-        {
-            if(Model.UserInputs.Zipcode == "" || Model.UserInputs.Zipcode == null)
+        {            
+            if (Model.UserInputs.Zipcode == "" || Model.UserInputs.Zipcode == null)
             {
                 ModelState.AddModelError("UserInputs.Zipcode", "The zipcode can not be empty");
             }
@@ -57,20 +62,13 @@ namespace SGChallenge.Controllers
             return Model;
         }
 
-
         private SalesAverageReport DateValidation(SalesAverageReport Model)
-        {            
+        {
             //TODO: Add Check to tell user that the End date is before start date
-            if(Model.UserInputs.EndDate < Model.UserInputs.StartDate)
+            if (Model.UserInputs.EndDate < Model.UserInputs.StartDate)
             {
                 ModelState.AddModelError("UserInputs.EndDate", "End date must be later than start date");
-            }
-
-            //Check if the start date is is greater than the end date
-            if (Model.UserInputs.StartDate > Model.UserInputs.EndDate)
-            {
-                ModelState.AddModelError("UserInputs.StartDate", "Start date must be earlier than end date");
-            }
+            }            
 
             //Check if the start date is a future date     
             if (Model.UserInputs.StartDate > DateTime.Now.Date)
@@ -84,11 +82,20 @@ namespace SGChallenge.Controllers
                 ModelState.AddModelError("UserInputs.EndDate", "End date can not be in the future");
             }
 
-
             return Model;
         }
 
+        #endregion
 
+        #region Home Controller Related Actions
+
+        [HttpPost]
+        public IActionResult ClearHome()
+        {
+            return RedirectToAction("Index");
+        }
+
+        #endregion
 
 
     }
